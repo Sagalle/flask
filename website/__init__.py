@@ -15,7 +15,7 @@ moment = Moment()
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'Too very hard to guess.'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:eBaye1er@localhost/myflaskbase'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://groupe6:groupe6@localhost/myflaskbase'
     db.init_app(app)
     bootstrap.init_app(app)
     mail.init_app(app)
@@ -44,3 +44,5 @@ def create_database(app):
     if not path.exists('website/myflaskbase.db'):
         db.create_all(app=app)
         print('Database Created!')
+
+

@@ -11,19 +11,18 @@ import json
 views = Blueprint('views', __name__)
 
 
-@views.route('/')
+@views.route('/', methods=['GET', 'POST'])
 def home():
-    per_page = 5
-    user = User.query.filter_by().all()
-    page = request.args.get('page', 1, type=int)
-    pagination = user.posts.order_by(User.timestamp.desc()).paginate(
-        page, per_page,
-        error_out=False)
+    #per_page = 5
+    #user = User.query.filter_by().all()
+    #page = request.args.get('page', 1, type=int)
+    #pagination = user.posts.order_by(User.timestamp.desc()).paginate(
+     #   page, per_page,
+      #  error_out=False)
 
-    users = pagination.items
+    #users = pagination.items
 
-    return render_template('home.html', users=users, user=user,
-                           pagination=pagination)
+    return render_template('home.html')
 
 
 @views.route('/login', methods=['GET', 'POST'])
