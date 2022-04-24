@@ -1,8 +1,66 @@
-{% extends "base.html"%}
-{% import "bootstrap/wtf.html" as wtf %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends "base.html" %}
+    {% import 'bootstrap/wtf.html' as wtf %}
+    {% import '_macros.html' as macros %}
 
-
+     {% block title %}Flask Project{% endblock %}
+</head>
 {% block page_content %}
-<h1>Home page</h1>
-<span>Test project Update</span>
+<body>
+
+<div id="asd"> {{ wtf.quick_form(form) }} </div> <br>
+<div class="my-buttons">
+    <div class="onclick">
+        <button onclick="asd(1)">Close</button>
+        <button onclick="asd(2)">Add User</button>
+    </div>
+    <div class="input-load">
+        <div>
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                  <option selected>Choose a number</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+            </select>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary mb-2">Load</button>
+        </div>
+    </div>
+</div>
+{% block user_list %}
+<h2>Users List</h2>
+<div class="users">
+    {% for user in users %}
+        <div class="col-md-4">
+            <div class="card">
+                <a href="{{ url_for('.login') }}">
+                    <h5>Username:{{ user.username }}  Name:{{ user.name | capitalize }}  Email:{{ user.email }}</h5>
+                   Member since:{{ moment(user.member_since).format('LLL') }}
+                </a>
+            </div><br>
+        </div>
+</div>
+    {% endfor %}
 {% endblock %}
+</body>
+<footer>
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.home') }}
+</div>
+{% endif %}
+
+
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}
+</footer>
+</html>

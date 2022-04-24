@@ -7,13 +7,12 @@ from flask_pagedown.fields import PageDownField
 
 
 class AddUserForm(FlaskForm):
-    name = StringField('Username', validators=[
+    name = StringField('Name', validators=[DataRequired(), Length(1, 128)])
+    username = StringField('Username', validators=[
         DataRequired(), Length(1, 128),
         Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
                'Usernames must have only letters, numbers, dots or '
                'underscores')])
-
-    username = StringField('User Name', validators=[DataRequired(), Length(1, 128)])
     email = StringField('Email', validators=[DataRequired(), Length(1, 128),
                                              Email()])
     street = StringField('Street', validators=[DataRequired(), Length(1, 128)])
@@ -28,11 +27,10 @@ class AddUserForm(FlaskForm):
     company_catchPhrase = StringField('CatchPhrase', validators=[DataRequired(), Length(1, 128)])
     company_bs = StringField('Company Description', validators=[DataRequired(), Length(1, 128)])
 
-
     password_hash = PasswordField('Password', validators=[
         DataRequired(), EqualTo('password2', message='Passwords must match.')])
     password2 = PasswordField('Confirm password', validators=[DataRequired()])
-    submit = SubmitField('Add')
+    submit = SubmitField('Submit')
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data.lower()).first():
@@ -53,21 +51,19 @@ class EditProfileForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
-
-
-
 class PostForm(FlaskForm):
-    name = StringField('Real name', validators=[Length(1, 128)])
+    title = StringField('Title of your post', validators=[Length(1, 128)])
     body = PageDownField("What's on your mind?", validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 
 class CommentForm(FlaskForm):
-    name = StringField("Comment'\s title", validators=[Length(1, 128)])
+    name = StringField("Comment title", validators=[Length(1, 128)])
     email = StringField('Email', validators=[DataRequired(), Length(1, 128),
                                              Email()])
     body = StringField('Enter your comment', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Length(1, 128),
@@ -75,5 +71,3 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log In')
-
-
