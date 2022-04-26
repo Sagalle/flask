@@ -46,6 +46,14 @@
                     <p id="name-email">Name : {{ user.name | capitalize }} Email : {{ user.email }}</p>
                     <p id="since">Member since {{ moment(user.member_since).format('L') }}</p>
                 </div>
+                <div id="edit-delete">
+                    <a href="#">
+                        <span class="label label-primary">Edit</span>
+                    </a>
+                    <a href="#">
+                        <span class="label label-danger">Delete</span>
+                    </a>
+                </div>
             </div><br>
         </div>
 </div>
