@@ -20,6 +20,7 @@
     {% endblock %}
 
     {% block navbar %}
+    <div id="main-nav">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
           <button
             class="navbar-toggler"
@@ -39,6 +40,7 @@
             </div>
           </div>
         </nav>
+    </div>
     {% endblock %}
     </head>
 <body>
@@ -56,9 +58,6 @@
     {% endblock %}
 </body>
 
-<div class="footer">
-    <p>Copyright ©<script>document.write(new Date().getFullYear());</script> All rights reserved by <a href="">Baye-Dieye-Aliou</a></p>
-</div>
 
 {% block scripts %}
     {{ super() }}

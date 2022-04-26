@@ -1,32 +1,80 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500&display=swap');
 
-div.pagination{
+*{
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+
+    margin: 0;
+    }
+
+#home, #logout,{
+color:#fff;
+font-weight:1.8rem;
+font-family:bold;
+}
+
+#pag1{
     display:flex;
     align-items:center;
     justify-content:center;
    }
-div.footer{
-background-color:dark;
-height:40px;
+
+
+#footer{
+display:flex;
+height:70px;
+background-color:#343a40!important;
+align-items:center;
+justify-content:center;
+font-weight:1.4rem;
+}
+
+#card{
+display:flex;
+flex-direction:row;
+background-color:gray
 width:100%;
-color:white;
+height:100px;
+border:1px solid gray;
+align-items:center;
 }
 
-div.my-buttons{
+#profile-image{
+height:20px;
+width:20px;
+}
+#infos{
+height:80px;
+width:300px;
+margin-left:20px;
+}
+
+.btn.btn-default{
+border:1px solid grey;
+font-weight:1.3rem;
+}
+
+.btns{
 display:flex;
 flex-direction:row;
-}
-div.onclick{
-display:flex;
+width:100%;
+height:60px;
 justify-content:space-between;
 }
 
-div.input-load{
+
+.input-load{
 display:flex;
 flex-direction:row;
 justify-content:space-between;
-padding-left:850px;
+width:105px;
+height:40px;
+float:right;
 }
+
 h2{
 text-align:center;
 }
@@ -35,17 +83,25 @@ display:flex;
 flex-direction:column;
 
 }
-div.col-md-4{
-color:black;
-font-family: 'Poppins', sans-serif;
-height:70px;
-width:50rem;
-background-color:#fff;
+
+.page-profile{
+display:flex;
+flex-direction:row;
+height:150px;
 }
 
-p.avatar{
-float:left;
+.profile-header{
+margin-left:15px;
 }
-p.profile-header{
-float:right;
+.contents-page{
+display:flex;
+justify-content: space-between;
+height:28px;
+width:220px;
+margin-top:15px;
+
 }
+.pagination{
+display:flex;
+justify-content: center;
+align-items:center;}

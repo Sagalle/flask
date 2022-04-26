@@ -61,7 +61,7 @@ class CommentForm(FlaskForm):
     name = StringField("Comment title", validators=[Length(1, 128)])
     email = StringField('Email', validators=[DataRequired(), Length(1, 128),
                                              Email()])
-    body = StringField('Enter your comment', validators=[DataRequired()])
+    body = PageDownField('Enter your comment', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 
@@ -71,3 +71,7 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log In')
+
+class TodoForm(FlaskForm):
+    title = StringField('Title of your todo', validators=[Length(1, 128)])
+    submit = SubmitField('Submit')

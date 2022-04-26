@@ -1,10 +1,12 @@
+import os.path
+
 from flask import Blueprint, render_template, request, flash, jsonify, current_app, url_for
 from flask_login import login_required, current_user, logout_user, login_user
 from sqlalchemy.orm import query
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import redirect
 
-from .forms import LoginForm, EditProfileForm, PostForm, AddUserForm, CommentForm
+from .forms import LoginForm, EditProfileForm, PostForm, AddUserForm, CommentForm, TodoForm
 from .models import User, Photo, Post, Comment, Todo, Album
 from . import db
 import json
@@ -98,30 +100,27 @@ def edit_post(id):
     return render_template('edit_post.html', form=form)
 
 
-@views.route('post/<int:id>', methods=['GET', 'POST'])
-def comment(id):
-    post = Post.query.get_or_404(id)
+@views.route('comment/<username>', methods=['GET', 'POST'])
+def comment(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    comments = Comment.query.filter_by().all()
     form = CommentForm()
     if form.validate_on_submit():
         comment = Comment(name=form.name.data,
                           email=form.email.data,
-                          body=form.body.data,
-                          author=current_user._get_current_object())
+                          body=form.body.data)
 
         db.session.add(comment)
         db.session.commit()
         flash('Your comment has been published.')
-        return redirect(url_for('.post', id=post.id, page=-1))
+        return redirect(url_for('.comment', username=user.username))
     page = request.args.get('page', 1, type=int)
-    if page == -1:
-        page = (post.comments.count() - 1) // \
-               current_app.config['FLASKY_COMMENTS_PER_PAGE'] + 1
-    pagination = post.comments.order_by(Comment.timestamp.asc()).paginate(
-        page, per_page=current_app.config['FLASKY_COMMENTS_PER_PAGE'],
+    pagination = Comment.query.order_by(Comment.date.asc()).paginate(
+        page, per_page=10,
         error_out=False)
-    comments = pagination.items
-    return render_template('comment.html', posts=[post], form=form,
-                           comments=comments, pagination=pagination)
+    items = pagination.items
+    return render_template('comment.html', user=user, form=form,
+                           comments=comments, items=items, post=post, pagination=pagination)
 
 
 @views.route('logout')
@@ -163,12 +162,26 @@ def album():
     return render_template('album.html')
 
 
-@views.route('todo', methods=['GET', 'POST'])
-def todo():
-    return render_template('todo.html')
+@views.route('todo/<username>', methods=['GET', 'POST'])
+def todo(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    todos = Todo.query.filter_by().all()
+    form = TodoForm()
+    if form.validate_on_submit():
+        todo = Todo(
+            title=form.title.data)
+        db.session.add(todo)
+        db.session.commit()
+        return redirect(url_for('.todo', username=user.username))
+    page = request.args.get('page', 1, type=int)
+    pagination = Todo.query.order_by(Todo.date.desc()).paginate(
+        page, per_page=10,
+        error_out=False)
+    items = pagination.items
+    return render_template('todo.html', form=form, todos=todos, items=items, pagination=pagination, user=user)
 
 
-@views.route('edit-user', methods=['GET', 'POST'])
+@views.route('edit-profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
     form = EditProfileForm()
@@ -182,7 +195,7 @@ def edit_profile():
         db.session.add(current_user._get_current_object())
         db.session.commit()
         flash('Your profile has been update!')
-        return redirect(url_for('.user_profile'))
+        return redirect(url_for('.user_profile', username=current_user.username))
     form.name.data = current_user.name
     form.username.data = current_user.username
     form.city.data = current_user.city
@@ -190,3 +203,58 @@ def edit_profile():
     form.company_name.data = current_user.company_name
     form.company_bs.data = current_user.company_bs
     return render_template('edit_profile.html', form=form)
+
+@views.route('edit-post', methods=['GET', 'POST'])
+@login_required
+def delete_post():
+    post = json.loads(request.data)
+    postId = post['postId']
+    post = Post.query.get(postId)
+    if post:
+        if post.userId == current_user.id:
+            db.session.delete(post)
+            db.session.commit()
+
+    return jsonify({})
+
+
+@views.route('add-user', methods=['GET', 'POST'])
+def add_user():
+    form = AddUserForm()
+    if form.validate_on_submit():
+        user = User(
+            name=form.name.data,
+            username=form.username.data,
+            email=form.email.data,
+            street=form.street.data,
+            suite=form.suite.data,
+            city=form.city.data,
+            zipcode=form.zipcode.data,
+            lat=form.lat.data,
+            lng=form.lng.data,
+            phone=form.phone.data,
+            website=form.website.data,
+            company_name=form.company_name.data,
+            company_catchPhrase=form.company_catchPhrase.data,
+            company_bs=form.company_bs.data,
+            password_hash=form.password_hash.data
+        )
+        db.session.add(user)
+        db.session.commit()
+        flash('User added succesfully!')
+        return redirect(url_for('.home'))
+    return render_template('add_user.html', form=form)
+
+
+@views.context_processor
+def override_url():
+    return dict(url_for=dated_url_for)
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(views.root_path,
+                                     endpoint, filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)

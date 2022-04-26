@@ -9,17 +9,14 @@
 </head>
 {% block page_content %}
 <body>
-
-<div id="asd"> {{ wtf.quick_form(form) }} </div> <br>
-<div class="my-buttons">
-    <div class="onclick">
-        <button onclick="asd(1)">Close</button>
-        <button onclick="asd(2)">Add User</button>
+<div class="btns">
+    <div class="add-user">
+        <a class="btn btn-default" href="{{ url_for('.add_user') }}">Add User</a>
     </div>
     <div class="input-load">
-        <div>
+        <div id="select">
             <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-                  <option selected>Choose a number</option>
+                  <option selected>Select</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -27,21 +24,28 @@
                   <option value="5">5</option>
             </select>
         </div>
-        <div>
-            <button type="button" class="btn btn-primary mb-2">Load</button>
+        <div id="load">
+            <a class="btn btn-default" href="#">Load</a>
         </div>
     </div>
 </div>
 {% block user_list %}
-<h2>Users List</h2>
+<h2>List of Users</h2>
+<br>
 <div class="users">
     {% for user in users %}
         <div class="col-md-4">
-            <div class="card">
-                <a href="{{ url_for('.login') }}">
-                    <h5>Username:{{ user.username }}  Name:{{ user.name | capitalize }}  Email:{{ user.email }}</h5>
-                   Member since:{{ moment(user.member_since).format('LLL') }}
-                </a>
+            <div class="card" id="card">
+                <div class="img">
+                    <a id="profile-image" href="{{ url_for('.login') }}">
+                    <p class="avatar"><img class="img-rounded profile-thumbnail" src="{{ user.gravatar(size=75) }}"></p>
+                    </a>
+                </div>
+                <div id="infos">
+                    <h5 id="username">Username : {{ user.username }}</h5>
+                    <p id="name-email">Name : {{ user.name | capitalize }} Email : {{ user.email }}</p>
+                    <p id="since">Member since {{ moment(user.member_since).format('L') }}</p>
+                </div>
             </div><br>
         </div>
 </div>
@@ -50,13 +54,15 @@
 </body>
 <footer>
 {% if pagination %}
-<div class="pagination">
+<div class="pagination" id="pag1">
     {{ macros.pagination_widget(pagination, '.home') }}
 </div>
 {% endif %}
-
-
-
+<div id="footer">
+    <div class="col-md-12 text-center text-white">
+        <p>Copyright ©<script>document.write(new Date().getFullYear());</script> All rights reserved by Baye-Dieye-Aliou</p>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}

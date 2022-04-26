@@ -1,10 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
-</body>
-</html>
+{% block title %}Comments{% endblock %}
+
+{% block page_content %}
+<div class="comment-form">
+    <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+    </div>
+</div><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<h4>Comments</h4><br>
+<div class="comments">
+    {% for comment in comments %}
+    <div class="comment">
+        <div class="comment-content">
+            <div class="comment-date">{{ moment(comment.date).fromNow() }}</div>
+            <div class="comment-title">Titre - {{ comment.name}}</div>
+            <div class="comment-email">Email - {{ comment.email}}</div><br>
+            <div class="comment-body">
+                {{ comment.body | safe }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.comment', username=user.username) }}
+</div>
+{% endif %}
+{% endblock %}

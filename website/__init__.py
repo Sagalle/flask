@@ -31,7 +31,7 @@ def create_app():
     app.register_blueprint(views, url_prefix='/')
 
     from .models import User, Post, Comment, Photo, Todo, Album
-    from .forms import AddUserForm, EditProfileForm, PostForm, CommentForm, LoginForm
+    from .forms import AddUserForm, EditProfileForm, PostForm, CommentForm, LoginForm, TodoForm
 
     create_database(app)
 

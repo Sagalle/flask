@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}Add New User{% endblock %}
+
+{% block page_content %}
+<h2><center>Add a new user</center></h2>
+<div class="add-user-form">
+  {{ wtf.quick_form(form) }}
+</div><br>
+<div id="footer">
+    <div class="col-md-12 text-center text-white">
+        <p>Copyright ©<script>document.write(new Date().getFullYear());</script> All rights reserved by Baye-Dieye-Aliou</p>
+    </div>
+</div>
+{%endblock%}

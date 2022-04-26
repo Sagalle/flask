@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %} Todos {% endblock %}
+
+{% block page_content %}
+
+<h4 id="comments">Todos</h4>
+<div class="todo-form">
+    {{ wtf.quick_form(form) }}
+</div><br><br>
+<div class="todo-body">
+    {% for todo in todos %}
+    <div class="todo-date">
+        {{ moment(todo.date).fromNow() }}
+    </div><br>
+    <div class="todo-title">
+         {{ todo.title }}
+    </div>
+    {% endfor %}
+</div>
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.todo', username=user.username) }}
+</div>
+{% endif %}
+{% endblock %}

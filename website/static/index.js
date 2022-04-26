@@ -6,3 +6,13 @@ function asd(a)
     else
         document.getElementById("asd").style.display="block";
 }
+
+
+function deletePost(noteId) {
+  fetch("delete-post", {
+    method: "POST",
+    body: JSON.stringify({ noteId: noteId }),
+  }).then((_res) => {
+    window.location.href = "/";
+  });
+}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}Albums{% endblock %}
+{% block page_content %}
+<h5>Photos</h5>
+<button class="btn btn-default">
+<a class="photo-api" href="https://api.pexels.com/v1/">See Photos</a>
+</button>
+{% endblock %}
