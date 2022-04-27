@@ -1,17 +1,8 @@
 
-function asd(a)
-{
-    if(a==1)
-        document.getElementById("asd").style.display="none";
-    else
-        document.getElementById("asd").style.display="block";
-}
-
-
-function deletePost(noteId) {
-  fetch("delete-post", {
+function deleteUser(userId) {
+  fetch("delete-user", {
     method: "POST",
-    body: JSON.stringify({ noteId: noteId }),
+    body: JSON.stringify({ userId: userId }),
   }).then((_res) => {
     window.location.href = "/";
   });

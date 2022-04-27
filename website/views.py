@@ -9,7 +9,6 @@ from werkzeug.utils import redirect
 from .forms import LoginForm, EditProfileForm, PostForm, AddUserForm, CommentForm, TodoForm
 from .models import User, Photo, Post, Comment, Todo, Album
 from . import db
-import json
 
 views = Blueprint('views', __name__)
 
@@ -55,32 +54,13 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data.lower()).first()
-        if user is not None:  # and check_password_hash(user.password_hash, form.password.data):
+        if user is None and not user.check_password(form.password.data): # or
+            flash('Invalid email or password.', 'danger')
+        else:
             login_user(user, form.remember_me.data)
-            flash('Logged in successfully!', category='success')
+            flash('Logged in successfully!', 'success')
             return redirect(url_for('.user_profile', username=user.username))
-        flash('Invalid email or password.', category='error')
     return render_template('login.html', form=form, user=current_user)
-
-
-@views.route('post', methods=['GET', 'POST'])
-def post():
-    posts = Post.query.filter_by().all()
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(title=form.title.data,
-                    body=form.body.data,
-                    author=current_user._get_current_object())
-        db.session.add(post)
-        db.session.commit()
-        return redirect(url_for('.post'))
-    page = request.args.get('page', 1, type=int)
-    pagination = Post.query.order_by(Post.date.desc()).paginate(
-        page, per_page=10,
-        error_out=False)
-    items_ = pagination.items
-    return render_template('post.html', form=form, posts=posts, items_=items_,
-                           pagination=pagination)
 
 
 @views.route('edit-post/<int:id>', methods=['GET', 'POST'])
@@ -93,14 +73,15 @@ def edit_post(id):
         post.body = form.body.data
         db.session.add(post)
         db.session.commit()
-        flash('The post has been updated successfully')
-        return redirect(url_for('.post'))
+        flash('The post has been updated successfully', 'success')
+        return redirect(url_for('.user_profile', username=current_user.username))
     form.title.data = post.title
     form.body.data = post.body
     return render_template('edit_post.html', form=form)
 
 
 @views.route('comment/<username>', methods=['GET', 'POST'])
+@login_required
 def comment(username):
     user = User.query.filter_by(username=username).first_or_404()
     comments = Comment.query.filter_by().all()
@@ -120,7 +101,7 @@ def comment(username):
         error_out=False)
     items = pagination.items
     return render_template('comment.html', user=user, form=form,
-                           comments=comments, items=items, post=post, pagination=pagination)
+                           comments=comments, items=items, pagination=pagination)
 
 
 @views.route('logout')
@@ -152,9 +133,36 @@ def user_profile(username):
                            pagination=pagination)
 
 
-@views.route('delete-user', methods=['GET, POST'])
-def delete_user():
-    return render_template('delete_user.html')
+@views.route('delete-user/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_user(id):
+    user = User.query.get(id)
+    if request.method == 'POST':
+        db.session.delete(user)
+        db.session.commit()
+        flash('User was deleted successfully', 'success')
+        return redirect(url_for('.home'))
+    return jsonify({})
+
+
+@views.route('edit-comment/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_comment(id):
+    comment = Comment.query.get_or_404(id)
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment.name = form.name.data
+        comment.email = form.email.data
+        comment.body = form.body.data
+        db.session.add(comment)
+        db.session.commit()
+        flash('The comment has been updated successfully', 'success')
+        return redirect(url_for('.comment', username=current_user.username))
+    form.name.data = comment.name
+    form.email.data = comment.email
+    form.body.data = comment.body
+    return render_template('edit_comment.html', form=form)
+
 
 
 @views.route('album', methods=['GET', 'POST'])
@@ -194,7 +202,7 @@ def edit_profile():
         current_user.company_bs = form.company_bs.data
         db.session.add(current_user._get_current_object())
         db.session.commit()
-        flash('Your profile has been update!')
+        flash('Your profile has been update!', 'success')
         return redirect(url_for('.user_profile', username=current_user.username))
     form.name.data = current_user.name
     form.username.data = current_user.username
@@ -206,16 +214,15 @@ def edit_profile():
 
 @views.route('edit-post', methods=['GET', 'POST'])
 @login_required
-def delete_post():
-    post = json.loads(request.data)
-    postId = post['postId']
-    post = Post.query.get(postId)
-    if post:
-        if post.userId == current_user.id:
-            db.session.delete(post)
-            db.session.commit()
-
+def delete_post(id):
+    post = Post.query.get(id)
+    if request.method == 'POST':
+        db.session.delete(post)
+        db.session.commit()
+        flash('Post was deleted successfully', 'success')
+        return redirect(url_for('.user_profile', username=current_user.username))
     return jsonify({})
+
 
 
 @views.route('add-user', methods=['GET', 'POST'])
@@ -241,7 +248,7 @@ def add_user():
         )
         db.session.add(user)
         db.session.commit()
-        flash('User added succesfully!')
+        flash('User added succesfully!', 'success')
         return redirect(url_for('.home'))
     return render_template('add_user.html', form=form)
 

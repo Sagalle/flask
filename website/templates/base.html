@@ -31,12 +31,12 @@
           </button>
           <div class="collapse navbar-collapse" id="navbar">
             <div class="navbar-nav">
-
-              <a class="nav-item nav-link" id="home" href="{{ url_for('.home') }}">Home</a>
-              <a class="nav-item nav-link" id="logout" href="{{ url_for('.logout') }}">Logout</a>
-
-              <a class="nav-item nav-link" id="login" href="{{ url_for('.login') }}">Login</a>
-              <a class="nav-item nav-link" id="signUp" href="#">Sign Up</a>
+                {% if current_user.is_authenticated %}
+                <a class="nav-item nav-link" id="logout" href="{{ url_for('.logout') }}">LOGOUT</a>
+                {% else %}
+                <a class="nav-item nav-link" id="home" href="{{ url_for('.home') }}">HOME</a>
+                <a class="nav-item nav-link" id="login" href="{{ url_for('.login') }}">LOGIN</a>
+                {% endif %}
             </div>
           </div>
         </nav>
