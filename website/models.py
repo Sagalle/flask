@@ -3,7 +3,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from . import db
 from sqlalchemy.sql import func
-from flask import current_app, request
 import hashlib
 
 
@@ -27,7 +26,6 @@ class User(db.Model, UserMixin):
     posts = db.relationship('Post', backref='owned_user', lazy='dynamic')
     albums = db.relationship('Album', backref='owned_user', lazy='dynamic')
     todos = db.relationship('Todo', backref='owned_user', lazy='dynamic')
-
 
     password_hash = db.Column(db.String(128))
 
@@ -100,4 +98,3 @@ class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128))
     date = db.Column(db.DateTime(timezone=True), default=func.now())
-

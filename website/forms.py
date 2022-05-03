@@ -75,3 +75,4 @@ class LoginForm(FlaskForm):
 class TodoForm(FlaskForm):
     title = StringField('Title of your todo', validators=[Length(1, 128)])
     submit = SubmitField('Submit')
+

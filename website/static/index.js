@@ -7,3 +7,4 @@ function deleteUser(userId) {
     window.location.href = "/";
   });
 }
+

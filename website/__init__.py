@@ -8,6 +8,7 @@ from os import path
 from flask_login import LoginManager
 
 
+
 db = SQLAlchemy()
 bootstrap = Bootstrap()
 mail = Mail()

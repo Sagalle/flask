@@ -25,10 +25,12 @@ font-family:bolder;
 #footer{
 display:flex;
 height:70px;
+width:100%;
 background-color:#343a40!important;
 align-items:center;
 justify-content:center;
 font-weight:1.4rem;
+margin-top:38%;
 }
 
 #card{
@@ -73,6 +75,7 @@ width:105px;
 height:40px;
 float:right;
 }
+
 
 h2{
 text-align:center;

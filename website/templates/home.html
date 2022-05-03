@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     {% extends "base.html" %}
     {% import 'bootstrap/wtf.html' as wtf %}
@@ -14,26 +14,24 @@
         <a class="btn btn-default" href="{{ url_for('.add_user') }}">Add User</a>
     </div>
     <div class="input-load">
-        <div id="select">
-            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-                  <option selected>Select</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
+        <form action="insert_users" method="post">
+            <label for="numbers"></label>
+            <select id="numbers" name="numbers">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
             </select>
-        </div>
-        <div id="load">
-            <a class="btn btn-default" href="#">Load</a>
-        </div>
+          <input type="submit" name="numbers" value="Load">
+        </form>
     </div>
 </div>
 {% block user_list %}
 <h2>List of Users</h2>
 <br>
-<div class="users">
-    {% for user in users %}
+{% for user in my_users %}
+    <div class="users" id="cont">
         <div class="col-md-4">
             <div class="card" id="card">
                 <div class="img">
@@ -47,16 +45,16 @@
                     <p id="since">Member since {{ moment(user.member_since).format('L') }}</p>
                 </div>
                 <div id="edit-delete">
-                    <a href="#">
+                    <a href="{{ url_for('.edit_profile') }}">
                         <span id="edit" class="label label-primary">Edit</span>
                     </a>
-                    <a onclick="deleteUser({{user.id}})">
+                    <a href="delete-user/{{user.id}}">
                         <span id="del" class="label label-danger">Delete</span>
                     </a>
                 </div>
             </div><br>
         </div>
-</div>
+    </div>
     {% endfor %}
 {% endblock %}
 </body>
