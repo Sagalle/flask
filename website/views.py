@@ -277,7 +277,7 @@ def insert_users():
     # Getting the number select from the input form
     if request.method == 'POST':
         number = request.form['numbers']
-        number = int(number)
+    number = int(number)
     per_page = 5
 
     my_users = items[0]
