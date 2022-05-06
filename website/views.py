@@ -8,7 +8,6 @@ from .models import User, Photo, Post, Comment, Todo, Album
 from . import db
 import requests
 
-
 views = Blueprint('views', __name__)
 
 
@@ -32,7 +31,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data.lower()).first()
-        if user is None and not user.check_password(form.password.data): # or
+        if user is None:  # and not user.check_password(form.password.data): # or
             flash('Invalid email or password.', 'danger')
         else:
             login_user(user, form.remember_me.data)
@@ -40,12 +39,13 @@ def login():
             return redirect(url_for('.user_profile', username=user.username))
     return render_template('login.html', form=form, user=current_user)
 
+
 @views.route('logout')
 @login_required
 def logout():
     logout_user()
     flash('You have been logged out.', category='info')
-    return redirect(url_for('.insert_users'))
+    return redirect(url_for('.home'))
 
 
 ### Posts views
@@ -65,7 +65,8 @@ def edit_post(id):
     form.body.data = post.body
     return render_template('edit_post.html', form=form)
 
-@views.route('user/delete-post/<int:id>', methods=['GET', 'POST'])
+
+@views.route('user/user/delete-post/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_post(id):
     post = Post.query.get(id)
@@ -80,7 +81,7 @@ def delete_post(id):
 @login_required
 def comment(username):
     user = User.query.filter_by(username=username).first_or_404()
-    comments = Comment.query.filter_by().all()
+    comments = Comment.query.filter_by().all().posts()
     form = CommentForm()
     if form.validate_on_submit():
         comment = Comment(name=form.name.data,
@@ -118,6 +119,7 @@ def edit_comment(id):
     form.body.data = comment.body
     return render_template('edit_comment.html', form=form)
 
+
 @views.route('comment/delete-comment/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_comment(id):
@@ -126,8 +128,6 @@ def delete_comment(id):
     db.session.commit()
     flash('Comment was deleted successfully', 'success')
     return redirect(url_for('.comment', username=current_user.username))
-
-
 
 
 ### Profile and users views
@@ -158,7 +158,8 @@ def delete_user(id):
     db.session.delete(user)
     db.session.commit()
     flash("User was deleted successfully")
-    return redirect(url_for('.insert_users'))
+    return redirect(url_for('.home'))
+
 
 @views.route('edit-profile', methods=['GET', 'POST'])
 @login_required
@@ -208,13 +209,14 @@ def add_user():
         db.session.add(user)
         db.session.commit()
         flash('User added succesfully!', 'success')
-        return redirect(url_for('.insert_users'))
+        return redirect(url_for('.home'))
     return render_template('add_user.html', form=form)
+
 
 ### Touched
 @views.route('album/<username>', methods=['GET', 'POST'])
 def album(username):
-    #photos = Album.query.filter_by(id=id).first().photos # touched
+    # photos = Album.query.filter_by(id=id).first().photos # touched
     return render_template('album.html', username=username)
 
 
@@ -241,6 +243,7 @@ def todo(username):
 def override_url():
     return dict(url_for=dated_url_for)
 
+
 def dated_url_for(endpoint, **values):
     if endpoint == 'static':
         filename = values.get('filename', None)
@@ -249,8 +252,6 @@ def dated_url_for(endpoint, **values):
                                      endpoint, filename)
             values['q'] = int(os.stat(file_path).st_mtime)
     return url_for(endpoint, **values)
-
-
 
 
 ############### API
@@ -276,8 +277,7 @@ def insert_users():
 
     # Getting the number select from the input form
     if request.method == 'POST':
-        number = request.form['numbers']
-    number = int(number)
+        number = int(request.form['numbers'])
     per_page = 5
 
     my_users = items[0]
@@ -311,7 +311,7 @@ def insert_users():
 
             db.session.add(user)
             db.session.commit()
-        my_users = User.query.filter_by().all() # All users added into the Postgresql database
+        my_users = User.query.filter_by().all()  # All users added into the Postgresql database
 
     #########
     elif number == user_db:
@@ -319,7 +319,7 @@ def insert_users():
     elif number > user_db:
         remain = number - user_db
         for i in range(remain):
-            one_user = data[i+user_db+1]# Don't take again users already existing into the database
+            one_user = data[i + user_db + 1]  # Don't take again users already existing into the database
 
             address = one_user['address']
             geo = address['geo']

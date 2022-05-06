@@ -58,21 +58,21 @@
     {% endfor %}
 {% endblock %}
 </body>
-<footer>
+
 {% if pagination %}
 <div class="pagination" id="pag1">
     {{ macros.pagination_widget(pagination, '.home') }}
 </div>
 {% endif %}
-<div id="footer">
-    <div class="col-md-12 text-center text-white">
-        <p>Copyright ©<script>document.write(new Date().getFullYear());</script> All rights reserved by Baye-Dieye-Aliou</p>
+<footer class="ff">
+    <div id="footer">
+        <div class="col-md-12 text-center text-white">
+            <p>Copyright ©<script>document.write(new Date().getFullYear());</script> All rights reserved by Baye-Dieye-Aliou</p>
+        </div>
     </div>
-</div>
-{% endblock %}
-
+</footer>
 {% block scripts %}
     {{ super() }}
 {% endblock %}
-</footer>
+{% endblock %}
 </html>

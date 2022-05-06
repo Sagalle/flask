@@ -20,8 +20,8 @@
     {% endblock %}
 
     {% block navbar %}
-    <div id="main-nav">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="main-nav">
           <button
             class="navbar-toggler"
             type="button"
@@ -78,4 +78,5 @@
       </script>
     <script src="{{ url_for('static', filename='index.js') }}"></script>
 {% endblock %}
+
 </html>
