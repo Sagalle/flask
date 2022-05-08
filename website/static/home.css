@@ -54,6 +54,11 @@ font-family:bolder;
    }
 
 
+.container, .container-lg, .container-md, .container-sm {
+    max-width: 100%;
+}
+
+
 
 #footer{
 display:flex;
@@ -63,13 +68,19 @@ background-color:#1878A2 !important;
 align-items:center;
 justify-content:center;
 font-weight:1.4rem;
-margin-top:38%;
+margin-top:28%;
 
 }
+
+
 .ff{
-width:1050px;
+width:100%;
 margin-left:0;
-}
+/* margin-right: 0; */}
+
+
+
+
 
 
 #card{
@@ -90,7 +101,7 @@ width:20px;
 .col-md-4 {
     -ms-flex: 0 0 33.333333%;
     flex: 0 0 33.333333%;
-    max-width: 50%;
+    max-width: 30%;
 }
 
 #infos {
@@ -247,3 +258,24 @@ border-radius:20px;
 cursor:pointer;
 font-size:150%;
 }
+
+
+
+.copy {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: x-large;
+}
+
+
+.control-label {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    font-size: large;
+}
+
+
+.form-control {
+    font-size: 2rem;
+}
+
