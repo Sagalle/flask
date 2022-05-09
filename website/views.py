@@ -14,7 +14,7 @@ views = Blueprint('views', __name__)
 @views.route('', methods=['GET', 'POST'])
 def home():
     users = User.query.filter_by().all()
-    per_page = 5
+    per_page = 2
     #### Void
     page = request.args.get('page', 1, type=int)
     pagination = User.query.order_by(User.member_since.desc()).paginate(
@@ -31,7 +31,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data.lower()).first()
-        if user is None or not user.check_password(form.password.data): # or
+        if user is None and not user.check_password(form.password.data): # or
             flash('Invalid email or password.', 'danger')
         else:
             login_user(user, form.remember_me.data)
@@ -274,9 +274,9 @@ def insert_users():
 
     # Getting the number select from the input form
     if request.method == 'POST':
-        number = int(request.form['numbers'])
+        number = int(request.form['numbers']) # Number of users to display
 
-    per_page = 5
+    per_page = 2
 
     my_users = items[0]
     data = Myapi().get_item(my_users)  # all users from the API
@@ -314,7 +314,7 @@ def insert_users():
     elif number == user_db:
         my_users = User.query.filter_by().all()
     elif number > user_db:
-        remain = number - user_db
+        remain = number - user_db #surplus to add
         for i in range(remain):
             one_user = data[i + user_db + 1]  # Don't take again users already existing into the database
 
