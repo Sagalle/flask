@@ -1,6 +1,6 @@
-from .models import User, Post, Comment, Album, Photo, Todo
+from .models import User
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, BooleanField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, Regexp, EqualTo
 from wtforms import ValidationError
 from flask_pagedown.fields import PageDownField
@@ -71,6 +71,7 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Log In')
+
 
 class TodoForm(FlaskForm):
     title = StringField('Title of your todo', validators=[Length(1, 128)])

@@ -13,9 +13,9 @@
         <h1>{{ user.name }}</h1>
         <p>
            {{ user.username }} <br>
-            {{ user.company_bs }}
-            from <a href="http://maps.google.com/?q={{ user.city }}">{{ user.city }}</a><br>
-            Contact:{{ user.email }}<br>
+            {{ user.company_bs }}<br>
+            From <a href="http://maps.google.com/?q={{ user.city }}">{{ user.city }}</a><br>
+            Contact: {{ user.email }}<br>
             Member since {{ moment(user.member_since).format('L') }}. Last seen {{ moment(user.last_seen).fromNow() }}.
         </p>
     <p class="edit-button">

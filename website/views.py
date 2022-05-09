@@ -1,10 +1,10 @@
 import os.path
-from flask import Blueprint, render_template, request, flash, current_app, url_for
+from flask import Blueprint, render_template, request, flash, url_for
 from flask_login import login_required, current_user, logout_user, login_user
 from werkzeug.utils import redirect
 
 from .forms import LoginForm, EditProfileForm, PostForm, AddUserForm, CommentForm, TodoForm
-from .models import User, Photo, Post, Comment, Todo, Album
+from .models import User, Photo, Post, Comment, Todo
 from . import db
 import requests
 
@@ -31,11 +31,11 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data.lower()).first()
-        if user is None:  # and not user.check_password(form.password.data): # or
+        if user is None or not user.check_password(form.password.data): # or
             flash('Invalid email or password.', 'danger')
         else:
             login_user(user, form.remember_me.data)
-            flash('Logged in successfully!', 'success')
+            flash('Logged in successfully!', category='success')
             return redirect(url_for('.user_profile', username=user.username))
     return render_template('login.html', form=form, user=current_user)
 
@@ -81,7 +81,7 @@ def delete_post(id):
 @login_required
 def comment(username):
     user = User.query.filter_by(username=username).first_or_404()
-    comments = Comment.query.filter_by().all().posts()
+    comments = Comment.query.filter_by().all()
     form = CommentForm()
     if form.validate_on_submit():
         comment = Comment(name=form.name.data,
@@ -213,10 +213,8 @@ def add_user():
     return render_template('add_user.html', form=form)
 
 
-### Touched
 @views.route('album/<username>', methods=['GET', 'POST'])
 def album(username):
-    # photos = Album.query.filter_by(id=id).first().photos # touched
     return render_template('album.html', username=username)
 
 
@@ -254,10 +252,8 @@ def dated_url_for(endpoint, **values):
     return url_for(endpoint, **values)
 
 
-############### API
-
-
-# Retreiving data from the api
+############### API #####################
+# Retrieving data from the api
 class Myapi:
     def get_item(self, item):
         url = 'https://jsonplaceholder.typicode.com/{}'.format(item)
@@ -271,6 +267,7 @@ def insert_users():
     """ n is the number of users
     wanted to be displayed """
 
+    global number
     items = ['users', 'posts', 'comments', 'albums', 'photos', 'todos']
 
     user_db = User.query.filter_by().count()  # number of users already into the database
@@ -278,6 +275,7 @@ def insert_users():
     # Getting the number select from the input form
     if request.method == 'POST':
         number = int(request.form['numbers'])
+
     per_page = 5
 
     my_users = items[0]
@@ -313,7 +311,6 @@ def insert_users():
             db.session.commit()
         my_users = User.query.filter_by().all()  # All users added into the Postgresql database
 
-    #########
     elif number == user_db:
         my_users = User.query.filter_by().all()
     elif number > user_db:
@@ -349,6 +346,8 @@ def insert_users():
 
     elif number < user_db:
         my_users = User.query.filter_by().all()[:number]
+    else:
+        my_users = User.query.filter_by().all()
 
     page = request.args.get('page', 1, type=int)
     pagination = User.query.order_by(User.member_since.desc()).paginate(
@@ -356,4 +355,4 @@ def insert_users():
         error_out=False)
     posts = pagination.items
 
-    return render_template('home.html', my_users=my_users, posts=posts, pagination=pagination)
+    return render_template('home.html', my_users=my_users, posts=posts, pagination=pagination, number=number)
